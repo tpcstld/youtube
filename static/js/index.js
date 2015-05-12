@@ -16,7 +16,7 @@ function getDownloadLink( params ) {
             $( "#download-link" ).toggleClass( "error" , false );
             $( "#download-link" ).html("");
             $( "<a />", {
-              href: '/api/file?filename=' + data.filename,
+              href: '/api/file?filename=' + data.filename + '&name=' + data.title,
               target: "_blank",
               html: data.title,
             }).appendTo( "#download-link" );

@@ -23,12 +23,14 @@ def download():
 @app.route('/api/file')
 def get_file():
     filename = request.args.get('filename', None)
+    name = request.args.get('name', None)
     if filename is None:
         return ''
 
     path = os.path.join(os.getcwd(), 'temp')
     print path, filename
-    return send_from_directory(path, filename, as_attachment=True)
+    return send_from_directory(path, filename, as_attachment=True,
+                               attachment_filename=name)
 
 if __name__ == '__main__':
     app.run(debug=True)
