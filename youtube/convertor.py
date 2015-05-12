@@ -13,7 +13,7 @@ def convert(source, target):
     """
     if not os.path.isfile(source):
         return
-    command = 'ffmpeg -y -i {source} -aq 1 {target}'.format(
+    command = 'ffmpeg -y -i {source} -f wav - | lame - {target}'.format(
         source=source,
         target=target,
     )
