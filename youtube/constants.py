@@ -1,0 +1,2 @@
+AUDIO_FILETYPE_NAME = 'audio'
+VIDEO_FILETYPE_NAME = 'video'

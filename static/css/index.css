@@ -1,0 +1,30 @@
+#title-row {
+    margin-top: 50px;
+}
+
+#download-link.error {
+    background-color: rgb( 255, 234, 234 );
+    border: 1px solid rgb( 255, 138, 138 );
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba( 255, 255, 255, .8 )
+                url('/~j39jiang/static/loading.gif')
+                50% 50%
+                no-repeat;
+}
+
+.modal.loading {
+    display: block;
+}
+
+#attribution {
+    font-size: 12px;
+}
