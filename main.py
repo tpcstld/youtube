@@ -9,6 +9,7 @@ from flask import request
 app = Flask(__name__)
 
 from youtube import handler
+from youtube.exceptions import YoutubeError
 
 @app.route('/')
 def index():
@@ -17,7 +18,13 @@ def index():
 @app.route('/api/download', methods=['POST'])
 def download():
     data = request.form
-    success, output = handler.initate_download(data.get('url'), data.get('filetype'))
+
+    # If there's a non-bug error, report it
+    try:
+        output = handler.initate_download(data.get('url'), data.get('filetype'))
+    except YoutubeError as e:
+        return jsonify(message=e.message), 400
+
     return jsonify(**output)
 
 @app.route('/api/file')

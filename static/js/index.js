@@ -23,7 +23,7 @@ function getDownloadLink( params ) {
         },
         error: function( jqXHR, textStatus, errorThrown ) {
             var downloadMessage = document.getElementById( "download-link" );
-            if ( errorThrown == "Bad Request" ) {
+            if ( errorThrown == "BAD REQUEST" ) {
                 var message = jQuery.parseJSON( jqXHR.responseText );
                 downloadMessage.innerHTML = "<b>Oops, something went wrong with the download</b><br><br><span>" + message.message + "</span>";
                 //downloadMessage.innerHTML = jqXHR.responseText;
