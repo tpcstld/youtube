@@ -12,6 +12,7 @@ app = Flask(__name__)
 cache = SimpleCache()
 
 from youtube import handler
+from youtube import validator
 from youtube.exceptions import YoutubeError
 
 @app.route('/')
@@ -60,6 +61,12 @@ def download():
     result = cache.get(cache_key)
     # Download not yet started
     if result is None:
+        # Do a preemptive validation screen
+        try:
+            validator.validate_url(url)
+        except YoutubeError as e:
+            return jsonify(status='ERROR', message=e.message), 400
+
         # Download the video in another thread
         thread = threading.Thread(
             target=download_video,
@@ -67,15 +74,16 @@ def download():
         )
         thread.daemon = True
         thread.start()
-        cache.set(cache_key, {'status': 'STARTED'}, timeout=60)
 
+        # Long timeout, if download exceeds this timeout, I don't care anymore.
+        cache.set(cache_key, {'status': 'STARTED'}, timeout=600*60)
         return jsonify(status='STARTING')
     elif result['status'] == 'STARTED':
         return jsonify(status='STARTED')
     elif result['status'] == 'FINISHED':
         return jsonify(status='FINISHED', **result['data'])
     else:
-        return jsonify(message=result['message']), result['code']
+        return jsonify(status='ERROR', message=result['message']), result['code']
 
 @app.route('/api/file')
 def get_file():
