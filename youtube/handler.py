@@ -4,6 +4,7 @@ import constants
 import convertor
 import downloader
 import validator
+from exceptions import DownloadError
 
 def initate_download(url, filetype):
     """Validates, downloads and possibly converts the video, depending on filetype
