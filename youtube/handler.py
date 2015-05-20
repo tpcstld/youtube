@@ -41,7 +41,7 @@ def initate_download(url, filetype):
         try:
             convertor.convert(file_path, new_file_path)
         except Exception as e:
-            print 'Conversion Error:', e.strerror
+            print 'Conversion Error:', e.message
             raise DownloadError('Error converting video to audio')
 
     filename = os.path.splitext(os.path.basename(file_path))[0] + file_ext
