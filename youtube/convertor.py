@@ -17,6 +17,8 @@ def convert(source, target):
         source=source,
         target=target,
     )
+
+    print 'Running command:', command
     process = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,
