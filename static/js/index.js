@@ -47,18 +47,18 @@ function queryDownload(formData) {
     complete: function(result) {
       data = JSON.parse(result.responseText);
       if (data.status === 'FINISHED' || data.status === 'ERROR') {
-        $( ".modal" ).removeClass( "loading" );
+        $('.modal').removeClass('loading');
+        var downloadMessage = document.getElementById('download-link');
+        downloadMessage.style.display = 'block';
+        var button = document.getElementById('submit-button');
+        button.innerHTML = 'Start';
+        button.disabled = false;
       }
-      var downloadMessage = document.getElementById( "download-link" );
-      downloadMessage.style.display = "block";
-      var button = document.getElementById( "submit-button" );
-      button.innerHTML = "Start";
-      button.disabled = false;
     }
   });
 }
 
 function getDownloadLink(formData) {
-  $( ".modal" ).addClass( "loading" );
+  $('.modal').addClass('loading');
   queryDownload(formData);
 }
