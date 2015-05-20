@@ -87,7 +87,7 @@ def download():
 
 @app.route('/api/file')
 def get_file():
-    filename = request.args.get('filename', None)
+    filename = 'finished_' + request.args.get('filename', None)
     name = request.args.get('name', None)
     if filename is None:
         return ''

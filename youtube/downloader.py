@@ -13,7 +13,8 @@ def download(url):
     downloader = YoutubeDL()
     downloader.add_default_info_extractors()
 
-    downloader.params['outtmpl'] = os.path.join(os.getcwd(), 'temp/%(id)s.%(ext)s')
+    # Prepend 'finished_' to get rid of annoying conversion error
+    downloader.params['outtmpl'] = os.path.join(os.getcwd(), 'temp/finished_%(id)s.%(ext)s')
     downloader.params['verbose'] = True
     downloader.params['cachedir'] = None
     downloader.params['noplaylist'] = True
