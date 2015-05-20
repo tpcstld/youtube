@@ -14,7 +14,7 @@ def download(url):
     downloader.add_default_info_extractors()
 
     downloader.params['outtmpl'] = os.path.join(os.getcwd(), 'temp/%(id)s.%(ext)s')
-    downloader.params['quiet'] = True
+    downloader.params['verbose'] = True
     downloader.params['cachedir'] = None
     downloader.params['noplaylist'] = True
     downloader.params['max_downloads'] = 1
