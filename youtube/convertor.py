@@ -11,8 +11,15 @@ def convert(source, target):
     Returns:
         The process that is converting the file.
     """
+    print 'Converting file:', source, 'to', target
     if not os.path.isfile(source):
+        print 'Not converting because source file is missing'
         return
+
+    if os.path.isfile(target):
+        print 'Not converting because target file exists'
+        return
+
     command = 'ffmpeg -y -i {source} -f wav - | lame - {target}'.format(
         source=source,
         target=target,
