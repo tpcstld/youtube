@@ -6,10 +6,10 @@ from flask import render_template
 from flask import jsonify
 from flask import send_from_directory
 from flask import request
-from werkzeug.contrib.cache import SimpleCache
+from werkzeug.contrib.cache import FileSystemCache
 
 app = Flask(__name__)
-cache = SimpleCache()
+cache = FileSystemCache(os.path.join(os.getcwd(), 'cache'))
 
 from youtube import handler
 from youtube import validator
