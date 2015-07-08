@@ -91,9 +91,15 @@ def get_file():
     name = request.args.get('name', None)
     if filename is None:
         return ''
+    if name:
+        name = name.encode("utf-8")
 
     path = os.path.join(os.getcwd(), 'temp')
-    print "Retrieving file:", path, filename, "of name:", name
+    try:
+        print "Retrieving file:", path, filename, "of name:", name
+    except Exception as e:
+        print e
+        raise
     return send_from_directory(path, filename, as_attachment=True,
                                attachment_filename=name)
 
