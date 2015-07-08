@@ -48,6 +48,6 @@ def initate_download(url, filetype):
 
     output = {
         'filename': filename.encode('ascii', 'xmlcharrefreplace'),
-        'title': title.encode('ascii', 'xmlcharrefreplace') + file_ext.encode('ascii', 'xmlcharrefreplace'),
+        'title': title + file_ext
     }
     return output
