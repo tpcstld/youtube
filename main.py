@@ -93,13 +93,11 @@ def get_file():
         return ''
     if name:
         name = name.encode("utf-8")
-
     path = os.path.join(os.getcwd(), 'temp')
-    try:
-        print "Retrieving file:", path, filename, "of name:", name
-    except Exception as e:
-        print e
-        raise
+
+    # Logging
+    print "Retrieving file:", path, filename, "of name:", name
+
     return send_from_directory(path, filename, as_attachment=True,
                                attachment_filename=name)
 

@@ -13,9 +13,8 @@ function displayLink(filename, title) {
   $( "#download-link" ).html("");
   $( "<a />", {
     href: '/api/file?filename=' + filename + '&name=' + title,
-    target: "_blank",
-    html: title,
-  }).appendTo( "#download-link" );
+    target: "_blank"
+  }).text(title).appendTo( "#download-link" );
 }
 
 function displayError(jqXHR, textStatus, errorThrown) {
