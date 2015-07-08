@@ -93,7 +93,7 @@ def get_file():
         return ''
 
     path = os.path.join(os.getcwd(), 'temp')
-    print path, filename
+    print "Retrieving file:", path, filename, "of name:", name
     return send_from_directory(path, filename, as_attachment=True,
                                attachment_filename=name)
 
