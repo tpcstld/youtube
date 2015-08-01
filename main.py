@@ -101,5 +101,15 @@ def get_file():
     return send_from_directory(path, filename, as_attachment=True,
                                attachment_filename=name)
 
+@app.route('/api/all_files')
+def list_files():
+    # Logging
+    print "Listing all downloaded files."
+
+    path = os.path.join(os.getcwd(), 'temp')
+    files = [f for f in os.listdir(path)
+             if os.path.isfile(os.path.join(path, f))]
+    return "\n".join(files)
+
 if __name__ == '__main__':
     app.run(debug=True)
