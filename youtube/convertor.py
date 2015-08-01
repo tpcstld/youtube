@@ -28,11 +28,12 @@ def _find_matching_file(filename):
     files = [f for f in os.listdir(path)
              if os.path.isfile(os.path.join(path, f))]
     print "Found all files:", " ".join(files)
-    files = [f for f in files if f.startswith(name)]
+    files = [f for f in files if f.startswith(os.path.basename(name))]
 
     if len(files) > 0:
-        print "Converting", files[0], "instead of", filename
-        return files[0]
+        new_filename = os.path.join(path, files[0])
+        print "Converting", new_filename, "instead of", filename
+        return new_filename
     else:
         print "Cannot find matching filename for", filename
         return ""
