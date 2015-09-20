@@ -30,9 +30,8 @@ function tryAutoDownload() {
 }
 
 // Try to automatically download once the page loads.
-document.addEventListener('onload', function() {
-  // We use a delay to ensure that the page is loaded properly.
-  setTimeout(tryAutoDownload, 3000);
+document.addEventListener('load', function() {
+  tryAutoDownload();
 });
 
 // Action to take when pressing the Submit button.
