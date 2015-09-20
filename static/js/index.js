@@ -30,9 +30,7 @@ function tryAutoDownload() {
 }
 
 // Try to automatically download once the page loads.
-document.addEventListener('load', function() {
-  tryAutoDownload();
-});
+$(window).load(tryAutoDownload);
 
 // Action to take when pressing the Submit button.
 function pressedSubmit() {
