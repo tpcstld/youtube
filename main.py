@@ -17,10 +17,14 @@ from youtube.exceptions import YoutubeError
 
 @app.route('/')
 def index():
+    """The main download form."""
     return render_template('index.html')
 
 @app.route('/watch')
 def watch():
+    """The same main download form, but can trigger javascript that
+    automatically queues up the video download.
+    """
     return render_template('index.html')
 
 def _get_cache_key(url, filetype):
@@ -75,9 +79,22 @@ def download_video(url, filetype):
             timeout=60,
         )
 
-
 @app.route('/api/download', methods=['POST'])
 def download():
+    """Accepts the download request.
+
+    Doesn't directly download the video, but instead queues up a thread to
+    download the video. This is so that we can return some result immediately,
+    to satisfy Heroku's policy of returning requests within 30 seconds.
+
+    Args: (Passed in through the form)
+        url: A string containing the URL of the video, in any format.
+        filetype: A string containing the filetype of the output, as either
+        'audio' or 'video'
+
+    Returns:
+        JSON containing the progress of the download.
+    """
     data = request.form
     url = data.get('url')
     filetype = data.get('filetype')
@@ -116,6 +133,18 @@ def download():
 
 @app.route('/api/file')
 def get_file():
+    """Gets the downloaded and processed file.
+
+    We don't want to keep track of any information, so we require the user
+    to return the "human" name of the file as well.
+
+    Args: (Passed in through request.args)
+        filename: A string containing the filename of the file to return.
+        name: A string containing the name of the file to return.
+
+    Returns:
+        The specified file over HTTP.
+    """
     filename = request.args.get('filename', None)
     name = request.args.get('name', None)
     if filename is None:
@@ -132,6 +161,7 @@ def get_file():
 
 @app.route('/api/all_files')
 def list_files():
+    """Lists all files. Used for primarily debugging reasons."""
     # Logging
     print "Listing all downloaded files."
 
