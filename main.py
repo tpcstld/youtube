@@ -19,6 +19,10 @@ from youtube.exceptions import YoutubeError
 def index():
     return render_template('index.html')
 
+@app.route('/watch')
+def index():
+    return render_template('index.html')
+
 def _get_cache_key(url, filetype):
     """Gets the key for the cache based on its url and filetype
 

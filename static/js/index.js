@@ -1,3 +1,39 @@
+// Detects whether or not the user has just replaced the youtube URL.
+// If they have, automatically download the video for them.
+// We're also going to assume that they only want audio, because who actually
+// uses my site for video downloads. >_>
+function tryAutoDownload() {
+  // If watch is not the path, we can be confident that the user does not want
+  // this feature.
+  if (window.pathname !== '/watch') {
+    return;
+  }
+
+  // If the URL does not have a video specified as the query string, we can also
+  // be confident that the user does not want this feature.
+  // For some reason, window.search refers to the query string >_>
+  if (window.search.indexOf("v=") < 0) {
+    return;
+  }
+
+  // Form a "fake" youtube url that refers to the video.
+  // This is just the youtube video site + the query string, because that's all
+  // we need.
+  var createdUrl = "www.youtube.com/watch" + window.search;
+  document.getElementById("url-input").value = createdUrl;
+
+  // We are going to rely on the default radio option being "audio".
+
+  // Download!
+  pressedSubmit();
+}
+
+// Try to automatically download once the page loads.
+document.addEventListener('onload', function() {
+  tryAutoDownload();
+});
+
+// Action to take when pressing the Submit button.
 function pressedSubmit() {
   var button = document.getElementById( "submit-button" );
   button.innerHTML = "Processing...";
@@ -8,6 +44,7 @@ function pressedSubmit() {
   getDownloadLink(data);
 }
 
+// Displays the download link to the user.
 function displayLink(filename, title) {
   $( "#download-link" ).toggleClass( "error" , false );
   $( "#download-link" ).html("");
@@ -17,6 +54,7 @@ function displayLink(filename, title) {
   }).text(title).appendTo( "#download-link" );
 }
 
+// Displays an error message to the user.
 function displayError(jqXHR, textStatus, errorThrown) {
   var downloadMessage = document.getElementById( "download-link" );
   if ( errorThrown == "BAD REQUEST" ) {
