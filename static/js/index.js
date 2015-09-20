@@ -19,7 +19,8 @@ function tryAutoDownload() {
   // Form a "fake" youtube url that refers to the video.
   // This is just the youtube video site + the query string, because that's all
   // we need.
-  var createdUrl = "www.youtube.com/watch" + window.location.search;
+  // The // at the beginning is required to meet the standards of an URL.
+  var createdUrl = "//www.youtube.com/watch" + window.location.search;
   document.getElementById("url-input").value = createdUrl;
 
   // We are going to rely on the default radio option being "audio".
