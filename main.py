@@ -20,7 +20,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/watch')
-def index():
+def watch():
     return render_template('index.html')
 
 def _get_cache_key(url, filetype):
