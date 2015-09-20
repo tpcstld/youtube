@@ -5,14 +5,14 @@
 function tryAutoDownload() {
   // If watch is not the path, we can be confident that the user does not want
   // this feature.
-  if (window.pathname !== '/watch') {
+  if (window.location.pathname !== '/watch') {
     return;
   }
 
   // If the URL does not have a video specified as the query string, we can also
   // be confident that the user does not want this feature.
-  // For some reason, window.search refers to the query string >_>
-  if (window.search.indexOf("v=") < 0) {
+  // For some reason, window.location.search refers to the query string >_>
+  if (window.location.search.indexOf("v=") < 0) {
     return;
   }
 
