@@ -11,6 +11,8 @@ from werkzeug.contrib.cache import FileSystemCache
 app = Flask(__name__)
 cache = FileSystemCache(os.path.join(os.getcwd(), 'cache'))
 
+from backend import list_files
+
 from youtube import handler
 from youtube import validator
 from youtube.exceptions import YoutubeError
@@ -164,21 +166,20 @@ def get_file():
                                attachment_filename=name)
 
 @app.route('/api/all_files')
-def list_files():
-    """Lists all files. Used for primarily debugging reasons."""
-    # Logging
-    print "Listing all downloaded files."
+def list_files_route():
+    """Lists all files. Used for primarily debugging reasons.
 
-    path = os.path.join(os.getcwd(), 'temp')
-    files = [f for f in os.listdir(path)
-             if os.path.isfile(os.path.join(path, f))]
+    Files are delimited by newline characters.
+    """
+    files = list_files.list_files()
 
     # If there are no files, you still need to return something, or else Heroku
     # returns a 500 error.
     if not files:
-        return "There are no files."
+        return 'There are no files.'
 
-    return "\n".join(files)
+    return '\n'.join(files)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
