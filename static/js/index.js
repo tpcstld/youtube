@@ -44,7 +44,7 @@ function pressedSubmit() {
 }
 
 // Displays the download link to the user.
-function displayLink(key) {
+function displayLink(key, title) {
   $( "#download-link" ).toggleClass( "error" , false );
   $( "#download-link" ).html("");
   $( "<a />", {
@@ -72,7 +72,7 @@ function queryDownload(formData) {
     data: formData,
     success: function(data) {
       if (data.status === 'FINISHED') {
-        displayLink(data.key);
+        displayLink(data.key, data.title);
       } else if (data.status === 'STARTING' || data.status === 'STARTED') {
         setTimeout(function() {
           queryDownload(formData);
