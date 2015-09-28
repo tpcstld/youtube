@@ -48,7 +48,7 @@ function displayLink(filename, title) {
   $( "#download-link" ).toggleClass( "error" , false );
   $( "#download-link" ).html("");
   $( "<a />", {
-    href: '/api/file?filename=' + filename + '&name=' + title,
+    href: '/api/file?key=' + key,
     target: "_blank"
   }).text(title).appendTo( "#download-link" );
 }

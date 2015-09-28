@@ -6,14 +6,19 @@ from youtube_dl import MaxDownloadsReached
 def download(url):
     """Downloads the youtube video from the url
 
+    Args:
+        url: The youtube URL pointing to the video to download.
+
     Returns:
-        A tuple containing the filename (not filepath) to the downloaded file
-        and the title of the video
+        A (file name, video title) tuple.
+
+    The file name is ONLY the file name, and does not include the file path.
     """
     downloader = YoutubeDL()
     downloader.add_default_info_extractors()
 
-    downloader.params['outtmpl'] = os.path.join(os.getcwd(), 'temp/%(id)s.%(ext)s')
+    downloader.params['outtmpl'] = os.path.join(os.getcwd(),
+                                                'temp/%(id)s.%(ext)s')
     downloader.params['verbose'] = True
     downloader.params['cachedir'] = None
     downloader.params['noplaylist'] = True

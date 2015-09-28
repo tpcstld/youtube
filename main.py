@@ -101,9 +101,9 @@ def download():
 
     cache_key = _get_cache_key(url, filetype)
 
-    result = cache.get(cache_key)
+    cached_data = cache.get(cache_key)
     # Download not yet started
-    if result is None:
+    if cached_data is None:
         # Do a preemptive validation screen, so we don't waste time processing
         # videos that are going to error out anyways.
         try:
@@ -124,12 +124,13 @@ def download():
         # Long timeout, if download exceeds this timeout, I don't care anymore.
         cache.set(cache_key, {'status': 'STARTED'}, timeout=600*60)
         return jsonify(status='STARTING')
-    elif result['status'] == 'STARTED':
+    elif cached_data['status'] == 'STARTED':
         return jsonify(status='STARTED')
-    elif result['status'] == 'FINISHED':
-        return jsonify(status='FINISHED', **result['data'])
+    elif cached_data['status'] == 'FINISHED':
+        return jsonify(status='FINISHED', key=cache_key, **cached_data['data'])
     else:
-        return jsonify(status='ERROR', message=result['message']), result['code']
+        result = jsonify(status='ERROR', message=cached_data['message'])
+        return result, cached_data['code']
 
 @app.route('/api/file')
 def get_file():
@@ -139,18 +140,19 @@ def get_file():
     to return the "human" name of the file as well.
 
     Args: (Passed in through request.args)
-        filename: A string containing the filename of the file to return.
-        name: A string containing the name of the file to return.
+        key: The cache key of the specified video.
 
     Returns:
         The specified file over HTTP.
     """
-    filename = request.args.get('filename', None)
-    name = request.args.get('name', None)
-    if filename is None:
+    cache_key = request.args.get('key', None)
+    if not cache_key:
         return ''
-    if name:
-        name = name.encode("utf-8")
+
+    cached_data = cache.get(cache_key)
+    filename = cached_data['data']['filename']
+    name = cached_data['data']['title']
+
     path = os.path.join(os.getcwd(), 'temp')
 
     # Logging
