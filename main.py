@@ -146,6 +146,7 @@ def get_file():
         The specified file over HTTP.
     """
     cache_key = request.args.get('key', None)
+    print "Getting information for cache key:", cache_key
     if not cache_key:
         return ''
 
