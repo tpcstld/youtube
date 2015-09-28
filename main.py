@@ -152,7 +152,8 @@ def get_file():
 
     cached_data = cache.get(cache_key)
     filename = cached_data['data']['filename']
-    name = cached_data['data']['title']
+    # We need to be able to handle unicode characters
+    name = cached_data['data']['title'].encode('utf-8')
 
     path = os.path.join(os.getcwd(), 'temp')
 
