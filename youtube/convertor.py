@@ -77,6 +77,9 @@ def convert(source, target):
 
     # Blocking call
     process.wait()
+
+    # Save some disk space
     if source != target:
         os.remove(source)
+
     return process.communicate()

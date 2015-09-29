@@ -1,12 +1,12 @@
 import unittest
 
-from .. import main
+import get_cache_key
 
 class CacheKeyTests(unittest.TestCase):
 
     def testSimple(self):
         """Should return a good cache key."""
-        result = main._get_cache_key('one', 'two')
+        result = get_cache_key.get_cache_key('one', 'two')
         assert 'one::::two' == result
 
 if __name__ == '__main__':

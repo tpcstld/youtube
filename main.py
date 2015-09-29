@@ -10,13 +10,18 @@ from flask import request
 from werkzeug.contrib.cache import FileSystemCache
 
 app = Flask(__name__)
+
+# We use a file cache in order to remain consistent across all serving instances
 cache = FileSystemCache(os.path.join(os.getcwd(), 'cache'))
 
 from backend import list_files
+from backend import get_cache_key
 
 from youtube import handler
 from youtube import validator
 from youtube.exceptions import YoutubeError
+
+# Pages
 
 @app.route('/')
 def index():
@@ -32,33 +37,15 @@ def watch():
     return render_template('index.html')
 
 
-def _get_cache_key(url, filetype):
-    """Gets the key for the cache based on its url and filetype
-
-    No guarantees are made about the content of the url, and two different
-    urls pointing to the same video will return different keys.
-
-    Args:
-        url: A string containing the URL of the video, in any format.
-        filetype: A string containing the filetype of the output, as either
-        'audio' or 'video'
-
-    Returns:
-        A should-be unique string useful for being the key of a hashtable for
-        that video and filetype.
-    """
-    return url + '::::' + filetype
-
-
 def _download_video(url, filetype):
-    """Downloads and converts the video
+    """Downloads and converts the video.
 
     Args:
         url: A string containing the URL of the video, in any format.
         filetype: A string containing the filetype of the output, as either
         'audio' or 'video'
     """
-    cache_key = _get_cache_key(url, filetype)
+    cache_key = get_cache_key.get_cache_key(url, filetype)
     # If there's a non-bug error, report it
     try:
         output = handler.initate_download(url, filetype)
@@ -85,6 +72,7 @@ def _download_video(url, filetype):
             timeout=60,
         )
 
+# APIs
 
 @app.route('/api/download', methods=['POST'])
 def download():
@@ -106,7 +94,7 @@ def download():
     url = data.get('url')
     filetype = data.get('filetype')
 
-    cache_key = _get_cache_key(url, filetype)
+    cache_key = get_cache_key.get_cache_key(url, filetype)
 
     cached_data = cache.get(cache_key)
     # Download not yet started
@@ -147,8 +135,7 @@ def download():
 def get_file():
     """Gets the downloaded and processed file.
 
-    We don't want to keep track of any information, so we require the user
-    to return the "human" name of the file as well.
+    We use the cache_key in order to keep track of the file's information.
 
     Args: (Passed in through request.args)
         key: The cache key of the specified video.

@@ -37,7 +37,7 @@ def initate_download(url, filetype):
     if filetype == constants.AUDIO_FILETYPE_NAME:
         original_file_path = os.path.splitext(file_path)[0]  # No file extension
         file_ext = '.mp3'
-        new_file_path = original_file_path + '.mp3'
+        new_file_path = original_file_path + file_ext
         try:
             convertor.convert(file_path, new_file_path)
         except Exception as e:
