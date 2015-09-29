@@ -94,6 +94,10 @@ def download():
     url = data.get('url')
     filetype = data.get('filetype')
 
+    # Users might not include a protocol
+    if not '//' in url:
+        url = '//' + url
+
     cache_key = get_cache_key.get_cache_key(url, filetype)
 
     cached_data = cache.get(cache_key)
