@@ -1,6 +1,7 @@
 import os
 import json
 import threading
+import urllib
 from flask import Flask
 from flask import render_template
 from flask import jsonify
@@ -22,12 +23,14 @@ def index():
     """The main download form."""
     return render_template('index.html')
 
+
 @app.route('/watch')
 def watch():
     """The same main download form, but can trigger javascript that
     automatically queues up the video download.
     """
     return render_template('index.html')
+
 
 def _get_cache_key(url, filetype):
     """Gets the key for the cache based on its url and filetype
@@ -46,7 +49,8 @@ def _get_cache_key(url, filetype):
     """
     return url + '::::' + filetype
 
-def download_video(url, filetype):
+
+def _download_video(url, filetype):
     """Downloads and converts the video
 
     Args:
@@ -80,6 +84,7 @@ def download_video(url, filetype):
             {'status': 'ERROR', 'code': 500, 'message': 'Internal Error'},
             timeout=60,
         )
+
 
 @app.route('/api/download', methods=['POST'])
 def download():
@@ -117,7 +122,7 @@ def download():
         # We use another thread so that we can return some result immediately,
         # in order to satisfy Heroku's "must return something" policy.
         thread = threading.Thread(
-            target=download_video,
+            target=_download_video,
             args=(url, data.get('filetype'))
         )
         thread.daemon = True
@@ -129,10 +134,14 @@ def download():
     elif cached_data['status'] == 'STARTED':
         return jsonify(status='STARTED')
     elif cached_data['status'] == 'FINISHED':
-        return jsonify(status='FINISHED', key=cache_key, **cached_data['data'])
+        # We need to URL encode the key so it can be passed as a query parameter
+        encoded_key = urllib.quote(cache_key)
+        return jsonify(status='FINISHED', key=encoded_key,
+                       **cached_data['data'])
     else:
         result = jsonify(status='ERROR', message=cached_data['message'])
         return result, cached_data['code']
+
 
 @app.route('/api/file')
 def get_file():
@@ -150,7 +159,7 @@ def get_file():
     cache_key = request.args.get('key', None)
     print "Getting information for cache key:", cache_key
     if not cache_key:
-        return ''
+        return '', 400
 
     cached_data = cache.get(cache_key)
     filename = cached_data['data']['filename']
@@ -164,6 +173,7 @@ def get_file():
 
     return send_from_directory(path, filename, as_attachment=True,
                                attachment_filename=name)
+
 
 @app.route('/api/all_files')
 def list_files_route():
