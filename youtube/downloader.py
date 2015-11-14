@@ -24,6 +24,9 @@ def download(url, audio_only):
     downloader.params['cachedir'] = None
     downloader.params['noplaylist'] = True
     downloader.params['max_downloads'] = 1
+    # We don't really have to do this, but YoutubeDL sometimes has a problem
+    # combining the video and audio portions of webm files, so this is a good
+    # workaround since we really only care about the audio part.
     if audio_only:
         downloader.params['format'] = 'bestaudio'
 
