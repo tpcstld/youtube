@@ -3,11 +3,12 @@ import os
 from youtube_dl import YoutubeDL
 from youtube_dl import MaxDownloadsReached
 
-def download(url):
+def download(url, audio_only):
     """Downloads the youtube video from the url
 
     Args:
         url: The youtube URL pointing to the video to download.
+        audio_only: True if we only want to download the best audio.
 
     Returns:
         A (file name, video title) tuple.
@@ -23,6 +24,8 @@ def download(url):
     downloader.params['cachedir'] = None
     downloader.params['noplaylist'] = True
     downloader.params['max_downloads'] = 1
+    if audio_only:
+        downloader.params['format'] = 'bestaudio'
 
     try:
         info = downloader.extract_info(url)

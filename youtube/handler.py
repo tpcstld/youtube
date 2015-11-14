@@ -27,7 +27,8 @@ def initate_download(url, filetype):
     # Ensure that the url is correct
     validator.validate_url(url)
     try:
-        file_path, title = downloader.download(url)
+        file_path, title = downloader.download(
+            url, filetype == constants.AUDIO_FILETYPE_NAME)
     except:
         raise DownloadError('Error processing file or url')
 
