@@ -61,7 +61,8 @@ def convert(source, target):
         print 'Not converting because target file exists'
         return
 
-    command = 'ffmpeg -y -i {source} -f wav - | lame - {target}'.format(
+    command = 'ffmpeg -y -i {source} {target}'.format(
+    # command = 'ffmpeg -y -i {source} -f wav - | lame - {target}'.format(
         source=source,
         target=target,
     )
