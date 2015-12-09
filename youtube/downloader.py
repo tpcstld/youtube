@@ -24,7 +24,7 @@ def download(url, audio_only):
     downloader.params['cachedir'] = None
     downloader.params['noplaylist'] = True
     downloader.params['max_downloads'] = 1
-    downloader.params['format'] = 'mp4'
+    # downloader.params['format'] = 'mp4'
 
     try:
         info = downloader.extract_info(url)
