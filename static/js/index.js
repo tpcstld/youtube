@@ -34,6 +34,9 @@ $(window).load(tryAutoDownload);
 
 // Action to take when pressing the Submit button.
 function pressedSubmit() {
+  // Change the page title to a loading message.
+  document.title = "Downloading - Youtube Downloader";
+
   var button = document.getElementById( "submit-button" );
   button.innerHTML = "Processing...";
   button.disabled = true;
@@ -45,6 +48,9 @@ function pressedSubmit() {
 
 // Displays the download link to the user.
 function displayLink(key, title) {
+  // Change the page title to a finished message.
+  document.title = "Finished - Youtube Downloader";
+
   $( "#download-link" ).toggleClass( "error" , false );
   $( "#download-link" ).html("");
   $( "<a />", {
@@ -55,6 +61,9 @@ function displayLink(key, title) {
 
 // Displays an error message to the user.
 function displayError(jqXHR, textStatus, errorThrown) {
+  // Change the page title to an error message.
+  document.title = "Error - Youtube Downloader";
+
   var downloadMessage = document.getElementById( "download-link" );
   if ( errorThrown == "BAD REQUEST" ) {
     var message = jQuery.parseJSON( jqXHR.responseText );
