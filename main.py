@@ -48,7 +48,12 @@ def _download_video(url, filetype):
     cache_key = get_cache_key.get_cache_key(url, filetype)
     # If there's a non-bug error, report it
     try:
-        output = handler.initate_download(url, filetype)
+        output = handler.initate_download(url, filetype, False)
+        if not os.path.isfile(os.path.join(os.getcwd(), 'temp',
+                                           output['filename'])):
+            print "Downloaded file missing. Retrying and forcing mp4 filetype."
+            output = handler.initate_download(url, filetype, True)
+
         # Give this cache a longer timeout, because it won't change anymore.
         # We still want the result to be cached though, so we don't have to
         # re-download. The other messages we don't want a longer timeout,

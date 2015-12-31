@@ -6,7 +6,7 @@ import downloader
 import validator
 from exceptions import DownloadError
 
-def initate_download(url, filetype):
+def initate_download(url, filetype, force_mp4_filetype):
     """Validates, downloads and possibly converts the video, depending on filetype
 
     Args:
@@ -28,7 +28,7 @@ def initate_download(url, filetype):
     validator.validate_url(url)
     try:
         file_path, title = downloader.download(
-            url, filetype == constants.AUDIO_FILETYPE_NAME)
+            url, filetype == constants.AUDIO_FILETYPE_NAME, force_mp4_filetype)
     except:
         raise DownloadError('Error processing file or url')
 
