@@ -155,9 +155,11 @@ def get_file():
     cache_key = request.args.get('key', None)
     print "Getting information for cache key:", cache_key
     if not cache_key:
-        return 'No file found.', 400
+        return '', 400
 
     cached_data = cache.get(cache_key)
+    if not cached_data:
+        return 'File not found. Please try again.', 400
     filename = cached_data['data']['filename']
     # We need to be able to handle unicode characters
     name = cached_data['data']['title'].encode('utf-8')
