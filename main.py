@@ -155,7 +155,7 @@ def get_file():
     cache_key = request.args.get('key', None)
     print "Getting information for cache key:", cache_key
     if not cache_key:
-        return '', 400
+        return 'No file found.', 400
 
     cached_data = cache.get(cache_key)
     filename = cached_data['data']['filename']
