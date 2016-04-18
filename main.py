@@ -21,6 +21,13 @@ from youtube import handler
 from youtube import validator
 from youtube.exceptions import YoutubeError
 
+# Constants
+
+# How long do we want to store a successful download, in seconds.
+OK_CACHE_SECONDS = 60 * 60  # One hour.
+# How long do we want to store a failed download, in seconds.
+BAD_CACHE_SECONDS = 60  # One minute.
+
 # Pages
 
 @app.route('/')
@@ -62,19 +69,19 @@ def _download_video(url, filetype):
         cache.set(
             cache_key,
             {'status': 'FINISHED', 'data': output},
-            timeout=5*60,
+            timeout=OK_CACHE_SECONDS,
         )
     except YoutubeError as e:
         cache.set(
             cache_key,
             {'status': 'ERROR', 'code': 400, 'message': e.message},
-            timeout=60,
+            timeout=BAD_CACHE_SECONDS,
         )
     except Exception:
         cache.set(
             cache_key,
             {'status': 'ERROR', 'code': 500, 'message': 'Internal Error'},
-            timeout=60,
+            timeout=BAD_CACHE_SECONDS,
         )
 
 # APIs
