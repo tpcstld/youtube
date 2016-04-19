@@ -59,6 +59,19 @@ function displayLink(key, title) {
   }).text(title).appendTo( "#download-link" );
 }
 
+// Triggers a download for the specified file.
+function triggerDownload(key) {
+  window.open("/api/file?key=" + key);
+}
+
+// Function to execute after download is finished.
+function finishDownload(key, title) {
+  displayLink(key, title);
+  if (document.getElementById("autodownload").checked) {
+    triggerDownload(key);
+  }
+}
+
 // Displays an error message to the user.
 function displayError(jqXHR, textStatus, errorThrown) {
   // Change the page title to an error message.
@@ -81,7 +94,7 @@ function queryDownload(formData) {
     data: formData,
     success: function(data) {
       if (data.status === 'FINISHED') {
-        displayLink(data.key, data.title);
+        finishDownload(data.key, data.title);
       } else if (data.status === 'STARTING' || data.status === 'STARTED') {
         setTimeout(function() {
           queryDownload(formData);
