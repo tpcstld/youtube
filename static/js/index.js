@@ -55,13 +55,12 @@ function displayLink(key, title) {
   $( "#download-link" ).html("");
   $( "<a />", {
     href: '/api/file?key=' + key,
-    target: "_blank"
   }).text(title).appendTo( "#download-link" );
 }
 
 // Triggers a download for the specified file.
 function triggerDownload(key) {
-  window.open("/api/file?key=" + key);
+  window.open("/api/file?key=" + key, "_self");
 }
 
 // Function to execute after download is finished.
