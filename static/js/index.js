@@ -1,27 +1,23 @@
-// Detects whether or not the user has just replaced the youtube URL.
-// If they have, automatically download the video for them.
+// Detects whether or not the user is using the "Chrome autocomplete" feature.
+// If they are, automatically download the video for them.
 // We're also going to assume that they only want audio, because who actually
 // uses my site for video downloads. >_>
 function tryAutoDownload() {
-  // If watch is not the path, we can be confident that the user does not want
+  // If quick is not the path, we can be confident that the user does not want
   // this feature.
-  if (window.location.pathname !== '/watch') {
+  if (window.location.pathname !== '/quick') {
     return;
   }
 
-  // If the URL does not have a video specified as the query string, we can also
-  // be confident that the user does not want this feature.
-  // For some reason, window.location.search refers to the query string >_>
-  if (window.location.search.indexOf("v=") < 0) {
+  // If there is no hash, we can also be confident that the user does not want
+  // this feature.
+  if (!window.location.hash) {
     return;
   }
 
-  // Form a "fake" youtube url that refers to the video.
-  // This is just the youtube video site + the query string, because that's all
-  // we need.
-  // The // at the beginning is required to meet the standards of an URL.
-  var createdUrl = "//www.youtube.com/watch" + window.location.search;
-  document.getElementById("url-input").value = createdUrl;
+  // The download url. Substr(1) removes the leading '#'.
+  var urlInput = window.location.hash.substr(1);
+  document.getElementById("url-input").value = urlInput;
 
   // We are going to rely on the default radio option being "audio".
 

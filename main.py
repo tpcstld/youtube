@@ -36,13 +36,12 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/watch')
-def watch():
-    """The same main download form, but can trigger javascript that
-    automatically queues up the video download.
+@app.route('/quick')
+def quick():
+    """An endpoint for Chrome autocomplete, displays the same page, but can
+    trigger Javascript that automatically queues up the download.
     """
     return render_template('index.html')
-
 
 def _download_video(url, filetype):
     """Downloads and converts the video.
