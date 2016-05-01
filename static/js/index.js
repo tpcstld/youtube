@@ -9,14 +9,16 @@ function tryAutoDownload() {
     return;
   }
 
-  // If there is no hash, we can also be confident that the user does not want
-  // this feature.
-  if (!window.location.hash) {
+  // If there is no query string , we can also be confident that the user does
+  // not want this feature.
+  // We are using the query string instead of the hash to ensure that the page
+  // is reloaded.
+  if (!window.location.search) {
     return;
   }
 
-  // The download url. Substr(1) removes the leading '#'.
-  var urlInput = window.location.hash.substr(1);
+  // The download url. Substr(1) removes the leading '?'.
+  var urlInput = window.location.search.substr(1);
   document.getElementById("url-input").value = urlInput;
 
   // We are going to rely on the default radio option being "audio".
