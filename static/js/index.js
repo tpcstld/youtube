@@ -18,7 +18,7 @@ function tryAutoDownload() {
   }
 
   // The download url. Substr(1) removes the leading '?'.
-  var urlInput = window.location.search.substr(1);
+  var urlInput = decodeURIComponent(window.location.search.substr(1));
   document.getElementById("url-input").value = urlInput;
 
   // We are going to rely on the default radio option being "audio".
