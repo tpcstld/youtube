@@ -104,17 +104,19 @@ def download():
         # Long timeout, if download exceeds this timeout, I don't care anymore.
         status_holder.set_downloading(url, filetype)
         return jsonify(status='STARTING')
-    elif cached_data['status'] == 'STARTED':
+    elif cached_data['status'] == status_holder.DOWNLOADING_STATUS:
         # TODO: Change to "starting". Or change the other thing to "started".
         return jsonify(status='STARTED')
-    elif cached_data['status'] == 'FINISHED':
+    elif cached_data['status'] == status_holder.FINISHED_STATUS:
         # We need to URL encode the key so it can be passed as a query parameter
         encoded_key = urllib.quote(status_holder.get_cache_key(url, filetype))
         return jsonify(status='FINISHED', key=encoded_key,
                        **cached_data['data'])
-    else:
+    elif cached_data['status'] == status_holder.ERROR_STATUS:
         result = jsonify(status='ERROR', message=cached_data['message'])
         return result, cached_data['code']
+
+    assert False
 
 
 @app.route('/api/file')
