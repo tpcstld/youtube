@@ -7,8 +7,6 @@ processing asynchronously, while holding the current state and progress.
 """
 # TODO: Tests
 
-import enum
-
 from werkzeug.contrib.cache import FileSystemCache
 
 # For a single dyno, there can be more than one serving instances.We leverage
