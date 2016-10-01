@@ -6,6 +6,7 @@ import downloader
 import validator
 from exceptions import DownloadError
 
+# TODO: Return a namedtuple instead.
 def initate_download(url, filetype, force_mp4_filetype):
     """Validates, downloads and possibly converts the video, depending on filetype
 

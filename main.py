@@ -11,22 +11,12 @@ from werkzeug.contrib.cache import FileSystemCache
 
 app = Flask(__name__)
 
-# We use a file cache in order to remain consistent across all serving instances
-cache = FileSystemCache(os.path.join(os.getcwd(), 'cache'))
-
 from backend import list_files
-from backend import get_cache_key
+from backend import status_holder
 
 from youtube import handler
 from youtube import validator
 from youtube.exceptions import YoutubeError
-
-# Constants
-
-# How long do we want to store a successful download, in seconds.
-OK_CACHE_SECONDS = 60 * 60  # One hour.
-# How long do we want to store a failed download, in seconds.
-BAD_CACHE_SECONDS = 60  # One minute.
 
 # Pages
 
@@ -51,7 +41,6 @@ def _download_video(url, filetype):
         filetype: A string containing the filetype of the output, as either
         'audio' or 'video'
     """
-    cache_key = get_cache_key.get_cache_key(url, filetype)
     # If there's a non-bug error, report it
     try:
         output = handler.initate_download(url, filetype, False)
@@ -60,28 +49,11 @@ def _download_video(url, filetype):
             print "Downloaded file missing. Retrying and forcing mp4 filetype."
             output = handler.initate_download(url, filetype, True)
 
-        # Give this cache a longer timeout, because it won't change anymore.
-        # We still want the result to be cached though, so we don't have to
-        # re-download. The other messages we don't want a longer timeout,
-        # because we want to be able to retry errors in a reasonable amount
-        # of time.
-        cache.set(
-            cache_key,
-            {'status': 'FINISHED', 'data': output},
-            timeout=OK_CACHE_SECONDS,
-        )
+        status_holder.set_finished(url, filetype, output)
     except YoutubeError as e:
-        cache.set(
-            cache_key,
-            {'status': 'ERROR', 'code': 400, 'message': e.message},
-            timeout=BAD_CACHE_SECONDS,
-        )
+        status_holder.set_error(url, filetype, e.message, 400)
     except Exception:
-        cache.set(
-            cache_key,
-            {'status': 'ERROR', 'code': 500, 'message': 'Internal Error'},
-            timeout=BAD_CACHE_SECONDS,
-        )
+        status_holder.set_error(url, filetype, 'Internal Error', 500)
 
 # APIs
 
@@ -109,9 +81,7 @@ def download():
     if not '//' in url:
         url = '//' + url
 
-    cache_key = get_cache_key.get_cache_key(url, filetype)
-
-    cached_data = cache.get(cache_key)
+    cached_data = status_holder.get_entry(url, filetype)
     # Download not yet started
     if cached_data is None:
         # Do a preemptive validation screen, so we don't waste time processing
@@ -132,13 +102,14 @@ def download():
         thread.start()
 
         # Long timeout, if download exceeds this timeout, I don't care anymore.
-        cache.set(cache_key, {'status': 'STARTED'}, timeout=600*60)
+        status_holder.set_downloading(url, filetype)
         return jsonify(status='STARTING')
     elif cached_data['status'] == 'STARTED':
+        # TODO: Change to "starting". Or change the other thing to "started".
         return jsonify(status='STARTED')
     elif cached_data['status'] == 'FINISHED':
         # We need to URL encode the key so it can be passed as a query parameter
-        encoded_key = urllib.quote(cache_key)
+        encoded_key = urllib.quote(status_holder.get_cache_key(url, filetype))
         return jsonify(status='FINISHED', key=encoded_key,
                        **cached_data['data'])
     else:
@@ -163,7 +134,7 @@ def get_file():
     if not cache_key:
         return '', 400
 
-    cached_data = cache.get(cache_key)
+    cached_data = status_holder.get_entry_from_key(cache_key)
     if not cached_data:
         return 'File not found. Please try again.', 400
     filename = cached_data['data']['filename']
