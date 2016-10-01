@@ -98,7 +98,7 @@ def download():
         # in order to satisfy Heroku's "must return something" policy.
         thread = threading.Thread(
             target=_download_video,
-            args=(download),
+            args=(download,),
         )
         thread.daemon = True
         thread.start()
