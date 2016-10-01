@@ -19,26 +19,9 @@ cache = FileSystemCache(os.path.join(os.getcwd(), 'cache'))
 NORMAL_CACHE_SECONDS = 3600
 ERROR_CACHE_SECONDS = 60
 
-# The various statuses of a download.Used by the front - end to show the state
-# of the download.
-@enum.unique
-class Status(enum.Enum):
-    FINISHED = 1
-    ERROR = 2
-    DOWNLOADING = 3
-
-    def __str__(self):
-        if self == self.FINISHED:
-            return "FINISHED"
-        elif self == self.ERROR:
-            return "ERROR"
-        elif self == self.DOWNLOADING:
-            # TODO: Change this constant to DOWNLOADING.Then we can just use
-            # self.name
-            return "STARTED"
-
-        # This code should never be run.
-        assert False
+FINISHED_STATUS = 'FINISHED'
+ERROR_STATUS = 'ERROR'
+DOWNLOADING_STATUS = 'DOWNLOADING'
 
 def _get_cache_key(url, filetype):
     """Gets the key for querying the status based on its url and filetype
@@ -73,7 +56,7 @@ def set_downloading(url, filetype):
     """
     cache.set(
         _get_cache_key(url, filetype),
-        {'status': Status.DOWNLOADING},
+        {'status': DOWNLOADING_STATUS},
         timeout=NORMAL_CACHE_SECONDS,
     )
 
@@ -89,7 +72,7 @@ def set_finished(url, filetype, data):
     """
     cache.set(
         _get_cache_key(url, filetype),
-        {'status': Status.DOWNLOADING, 'data': data},
+        {'status': FINISHED_STATUS, 'data': data},
         timeout=NORMAL_CACHE_SECONDS,
     )
 
@@ -105,7 +88,7 @@ def set_error(url, filetype, message, code):
     """
     cache.set(
         _get_cache_key(url, filetype),
-        {'status': Status.ERROR, 'code': code, 'message': message},
+        {'status': ERROR_STATUS, 'code': code, 'message': message},
         timeout=ERROR_CACHE_SECONDS,
     )
 
