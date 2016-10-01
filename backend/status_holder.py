@@ -6,6 +6,7 @@ download correctly. In order to get around this, we do the downloading and
 processing asynchronously, while holding the current state and progress.
 """
 # TODO: Tests
+import os
 
 from werkzeug.contrib.cache import FileSystemCache
 
