@@ -7,12 +7,11 @@ import validator
 from exceptions import DownloadError
 
 # TODO: Return a namedtuple instead.
-def initate_download(url, filetype, force_mp4_filetype):
+def initate_download(download):
     """Validates, downloads and possibly converts the video, depending on filetype
 
     Args:
-        url(str): The URL for the video to download
-        filetype(str): The desired filetype (video or audio)
+        download: A DownloadRequest object.
 
     Returns:
         A dict containing the filename and title of the video. The filename is
@@ -23,20 +22,21 @@ def initate_download(url, filetype, force_mp4_filetype):
         DownloadError: if something went wrong during the download
     """
     # Log the download
-    print 'Downloading', url, 'in', filetype, 'format'
+    print 'Downloading', download.get_url(), 'in', download.get_filetype(), 'format'
 
     # Ensure that the url is correct
-    validator.validate_url(url)
+    # TODO: Remove
+    validator.validate_url(download.get_url())
     try:
-        file_path, title = downloader.download(
-            url, filetype == constants.AUDIO_FILETYPE_NAME, force_mp4_filetype)
+        file_path, title = downloader.download(download)
     except:
         raise DownloadError('Error processing file or url')
 
     file_ext = os.path.splitext(file_path)[1]
 
     # Convert the video if the selected file type is 'audio'
-    if filetype == constants.AUDIO_FILETYPE_NAME:
+    # TODO: Implement is_audio in DownloadRequest.
+    if download.is_audio_only():
         original_file_path = os.path.splitext(file_path)[0]  # No file extension
         file_ext = '.mp3'
         new_file_path = original_file_path + file_ext

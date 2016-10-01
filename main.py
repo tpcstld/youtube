@@ -13,7 +13,8 @@ app = Flask(__name__)
 
 from backend import list_files
 from backend import status_holder
-from backend import download_request
+
+import download_request
 
 from youtube import handler
 from youtube import validator
@@ -34,27 +35,29 @@ def quick():
     """
     return render_template('index.html')
 
-def _download_video(url, filetype):
+def _download_video(download):
     """Downloads and converts the video.
 
     Args:
-        url: A string containing the URL of the video, in any format.
-        filetype: A string containing the filetype of the output, as either
-        'audio' or 'video'
+        download: A DownloadRequest object.
     """
     # If there's a non-bug error, report it
     try:
-        output = handler.initate_download(url, filetype, False)
+        output = handler.initate_download(download)
         if not os.path.isfile(os.path.join(os.getcwd(), 'temp',
                                            output['filename'])):
             print "Downloaded file missing. Retrying and forcing mp4 filetype."
-            output = handler.initate_download(url, filetype, True)
+            download.set_force_mp4_filetype(True)
+            output = handler.initate_download(download)
 
-        status_holder.set_finished(url, filetype, output)
+        status_holder.set_finished(
+                download.get_url(), download.get_filetype(), output)
     except YoutubeError as e:
-        status_holder.set_error(url, filetype, e.message, 400)
+        status_holder.set_error(
+                download.get_url(), download.get_filetype(), e.message, 400)
     except Exception:
-        status_holder.set_error(url, filetype, 'Internal Error', 500)
+        status_holder.set_error(download.get_url(), download.get_filetype(),
+                'Internal Error', 500)
 
 # APIs
 
@@ -95,7 +98,7 @@ def download():
         # in order to satisfy Heroku's "must return something" policy.
         thread = threading.Thread(
             target=_download_video,
-            args=(download.get_url(), download.get_filetype()),
+            args=(download),
         )
         thread.daemon = True
         thread.start()

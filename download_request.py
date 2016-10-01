@@ -1,5 +1,6 @@
 """Contains data about a download request.
 """
+from youtube import constants
 
 class DownloadRequest(object):
 
@@ -17,11 +18,21 @@ class DownloadRequest(object):
 
         self.url = url
         self.filetype = filetype
+        self.force_mp4_filetype = False
 
     def get_url(self):
         return self.url
 
     def get_filetype(self):
         return self.filetype
+
+    def is_audio_only(self):
+        return self.get_filetype() == constants.AUDIO_FILETYPE_NAME
+
+    def set_force_mp4_filetype(self, value):
+        self.force_mp4_filetype = value
+
+    def get_force_mp4_filetype(self):
+        return self.force_mp4_filetype
 
     # TODO: Time constraints.
