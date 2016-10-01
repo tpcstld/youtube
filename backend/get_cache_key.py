@@ -1,3 +1,4 @@
+# TODO: Remove file.
 def get_cache_key(url, filetype):
     """Gets the key for the cache based on its url and filetype
 

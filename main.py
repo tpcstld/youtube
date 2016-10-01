@@ -13,6 +13,7 @@ app = Flask(__name__)
 
 from backend import list_files
 from backend import status_holder
+from backend import download_request
 
 from youtube import handler
 from youtube import validator
@@ -74,20 +75,17 @@ def download():
         JSON containing the progress of the download.
     """
     data = request.form
-    url = data.get('url')
-    filetype = data.get('filetype')
+    download = DownloadRequest(data.get('url'), data.get('filetype'))
 
-    # Users might not include a protocol
-    if not '//' in url:
-        url = '//' + url
-
-    cached_data = status_holder.get_entry(url, filetype)
+    cached_data = status_holder.get_entry(
+            download.get_url(), download.get_filetype())
     # Download not yet started
     if cached_data is None:
         # Do a preemptive validation screen, so we don't waste time processing
         # videos that are going to error out anyways.
+        # TODO: Move this to the DownloadRequest class.
         try:
-            validator.validate_url(url)
+            validator.validate_url(download.get_url())
         except YoutubeError as e:
             return jsonify(status='ERROR', message=e.message), 400
 
@@ -96,20 +94,22 @@ def download():
         # in order to satisfy Heroku's "must return something" policy.
         thread = threading.Thread(
             target=_download_video,
-            args=(url, data.get('filetype'))
+            args=(download.get_url(), download.get_filetype()),
         )
         thread.daemon = True
         thread.start()
 
         # Long timeout, if download exceeds this timeout, I don't care anymore.
-        status_holder.set_downloading(url, filetype)
+        status_holder.set_downloading(
+                download.get_url(), download.get_filetype())
         return jsonify(status='STARTING')
     elif cached_data['status'] == status_holder.DOWNLOADING_STATUS:
         # TODO: Change to "starting". Or change the other thing to "started".
         return jsonify(status='STARTED')
     elif cached_data['status'] == status_holder.FINISHED_STATUS:
         # We need to URL encode the key so it can be passed as a query parameter
-        encoded_key = urllib.quote(status_holder.get_cache_key(url, filetype))
+        encoded_key = urllib.quote(status_holder.get_cache_key(
+            download.get_url(), download.get_filetype()))
         return jsonify(status='FINISHED', key=encoded_key,
                        **cached_data['data'])
     elif cached_data['status'] == status_holder.ERROR_STATUS:
