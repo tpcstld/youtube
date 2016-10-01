@@ -75,7 +75,8 @@ def download():
         JSON containing the progress of the download.
     """
     data = request.form
-    download = DownloadRequest(data.get('url'), data.get('filetype'))
+    download = download_request.DownloadRequest(
+            data.get('url'), data.get('filetype'))
 
     cached_data = status_holder.get_entry(
             download.get_url(), download.get_filetype())
