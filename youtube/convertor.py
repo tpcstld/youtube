@@ -58,9 +58,12 @@ def convert(source, target, download):
         print 'Not converting because source file is missing'
         return
 
-    if os.path.isfile(target):
-        print 'Not converting because target file exists'
-        return
+    # TODO: Make the target a different filename if it's time trimmed.
+    # Because we removed this line, there is now a race condition.
+    # Oh well for now. ):
+    # if os.path.isfile(target):
+    #     print 'Not converting because target file exists'
+    #     return
 
     if download.should_time_trim():
         start_time, end_time = download.get_time_trimming_data()
