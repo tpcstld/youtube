@@ -1,6 +1,7 @@
 """Contains data about a download request.
 """
 import re
+import time
 
 from youtube import constants
 from youtube.exceptions import ValidationError
@@ -27,9 +28,8 @@ class DownloadRequest(object):
         # TODO: Move to it's own object.
         self.enable_trim = False
 
-        # These are strings to be passed into ffmpeg.
-        self.trim_start = None
-        self.trim_end = None
+        self.trim_start_secs = None
+        self.trim_duration = None
 
     def get_url(self):
         return self.url
@@ -50,15 +50,18 @@ class DownloadRequest(object):
         """Enables time trimming.
 
         Args:
-            start: A string in the format "HH:MM:SS" to be passed into ffmpeg.
-            end: A string in the format "HH:MM:SS" to be passed into ffmpeg.
+            start: A string in the format "HH:MM:SS".
+            end: A string in the format "HH:MM:SS".
         """
-        if not self.TIME_REGEX.match(start) or not self.TIME_REGEX.match(end):
-            raise ValidationError("Bad time format.")
+        def to_seconds(timestr):
+            seconds= 0
+            for part in timestr.split(':'):
+                seconds= seconds*60 + int(part)
+            return seconds
 
         self.enable_trim = True
-        self.trim_start = start
-        self.trim_end = end
+        self.trim_start = to_seconds(start)
+        self.trim_duration = to_seconds(end) - self.trim_start
 
     def should_time_trim(self):
         """Returns whether or not to trim the video.
@@ -69,9 +72,11 @@ class DownloadRequest(object):
         return self.enable_trim
 
     def get_time_trimming_data(self):
-        """Get the start and end time to trim on.
+        """Get the start and duration to trim on.
 
         Returns:
-            A tuple (start time, end time).
+            A tuple (start time, duration).
         """
-        return (self.trim_start, self.trim_end)
+        return (
+            time.strftime('%H:%M:%S', time.gmtime(self.trim_start)),
+            time.strftime('%H:%M:%S', time.gmtime(self.trim_duration)))
