@@ -50,14 +50,11 @@ def _download_video(download):
             download.set_force_mp4_filetype(True)
             output = handler.initate_download(download)
 
-        status_holder.set_finished(
-                download.get_url(), download.get_filetype(), output)
+        status_holder.set_finished(download, output)
     except YoutubeError as e:
-        status_holder.set_error(
-                download.get_url(), download.get_filetype(), e.message, 400)
+        status_holder.set_error(download, e.message, 400)
     except Exception:
-        status_holder.set_error(download.get_url(), download.get_filetype(),
-                'Internal Error', 500)
+        status_holder.set_error(download, 'Internal Error', 500)
 
 # APIs
 
@@ -81,8 +78,13 @@ def download():
     download = download_request.DownloadRequest(
             data.get('url'), data.get('filetype'))
 
-    cached_data = status_holder.get_entry(
-            download.get_url(), download.get_filetype())
+    if data.get('enable_trim') == "on":
+        try:
+            download.set_time_trimming(data.get("start_time"), data.get("end_time"))
+        except YoutubeError as e:
+            return jsonify(status='ERROR', message=e.message), 400
+
+    cached_data = status_holder.get_entry(download)
     # Download not yet started
     if cached_data is None:
         # Do a preemptive validation screen, so we don't waste time processing
@@ -104,16 +106,14 @@ def download():
         thread.start()
 
         # Long timeout, if download exceeds this timeout, I don't care anymore.
-        status_holder.set_downloading(
-                download.get_url(), download.get_filetype())
+        status_holder.set_downloading(download)
         return jsonify(status='STARTING')
     elif cached_data['status'] == status_holder.DOWNLOADING_STATUS:
         # TODO: Change to "starting". Or change the other thing to "started".
         return jsonify(status='STARTED')
     elif cached_data['status'] == status_holder.FINISHED_STATUS:
         # We need to URL encode the key so it can be passed as a query parameter
-        encoded_key = urllib.quote(status_holder.get_cache_key(
-            download.get_url(), download.get_filetype()))
+        encoded_key = urllib.quote(status_holder.get_cache_key(download))
         return jsonify(status='FINISHED', key=encoded_key,
                        **cached_data['data'])
     elif cached_data['status'] == status_holder.ERROR_STATUS:

@@ -35,13 +35,12 @@ def initate_download(download):
     file_ext = os.path.splitext(file_path)[1]
 
     # Convert the video if the selected file type is 'audio'
-    # TODO: Implement is_audio in DownloadRequest.
     if download.is_audio_only():
         original_file_path = os.path.splitext(file_path)[0]  # No file extension
         file_ext = '.mp3'
         new_file_path = original_file_path + file_ext
         try:
-            convertor.convert(file_path, new_file_path)
+            convertor.convert(file_path, new_file_path, download)
         except Exception as e:
             print 'Conversion Error:', e.message
             raise DownloadError('Error converting video to audio')

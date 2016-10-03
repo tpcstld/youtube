@@ -38,12 +38,13 @@ def _find_matching_file(filename):
         print "Cannot find matching filename for", filename
         return ""
 
-def convert(source, target):
+def convert(source, target, download):
     """Converts the file from 'source' to 'target' using FFMPEG
 
     Args:
         source(str): Filepath to the source file
         target(str): Filepath to the target file
+        download(DownloadRequest): The download request.
 
     Returns:
         The process that is converting the file.
@@ -61,10 +62,19 @@ def convert(source, target):
         print 'Not converting because target file exists'
         return
 
-    command = 'ffmpeg -y -i {source} -f wav - | lame -V 0 - {target}'.format(
-        source=source,
-        target=target,
-    )
+    if download.should_time_trim():
+        start_time, end_time = download.get_time_trimming_data()
+        command = 'ffmpeg -y -ss {start_time} -to {end_time} -i {source} -f wav - | lame -V 0 - {target}'.format(
+            start_time=start_time,
+            end_time=end_time,
+            source=source,
+            target=target,
+        )
+    else:
+        command = 'ffmpeg -y -i {source} -f wav - | lame -V 0 - {target}'.format(
+            source=source,
+            target=target,
+        )
 
     print 'Running command:', command
     process = subprocess.Popen(
