@@ -38,7 +38,7 @@ def _get_cache_key(download):
         A should-be unique string useful for being the key of a hashtable for
         that video and filetype.
     """
-    if download.should_time_trim:
+    if download.should_time_trim():
         start, end = download.get_time_trimming_data()
         second_part = "True" + start + end
     else:
