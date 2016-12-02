@@ -3,6 +3,7 @@ import os
 from youtube_dl import YoutubeDL
 from youtube_dl import MaxDownloadsReached
 
+# TODO: Add progress bar feature.
 def download(download):
     """Downloads the youtube video from the url
 
