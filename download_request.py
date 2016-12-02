@@ -21,7 +21,7 @@ class DownloadRequest(object):
         if not '//' in url:
             url = '//' + url
 
-        validator.validate_url(download.get_url());
+        validator.validate_url(url)
         self.url = url
 
         # TODO: We should validate that it is either 'audio' or 'video'.
