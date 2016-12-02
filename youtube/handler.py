@@ -24,9 +24,6 @@ def initate_download(download):
     # Log the download
     print 'Downloading', download.get_url(), 'in', download.get_filetype(), 'format'
 
-    # Ensure that the url is correct
-    # TODO: Remove
-    validator.validate_url(download.get_url())
     try:
         file_path, title = downloader.download(download)
     except:
