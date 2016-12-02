@@ -23,9 +23,9 @@ class DownloadRequest(object):
 
         validator.validate_url(url)
         self.url = url
-
-        # TODO: We should validate that it is either 'audio' or 'video'.
+        validator.validate_filetype(filetype)
         self.filetype = filetype
+
         self.force_mp4_filetype = False
 
         # TODO: Abstract trimming information to its own object.

@@ -3,7 +3,7 @@ import urlparse
 import constants
 from exceptions import ValidationError
 
-def is_url_from_youtube(url):
+def _is_url_from_youtube(url):
     """Checks whether or not an URL is from youtube
 
     Args:
@@ -16,7 +16,7 @@ def is_url_from_youtube(url):
     # Two possible youtu.be is the shortlink version of youtube
     return 'youtube.' in location or 'youtu.be' in location
 
-def is_playlist_url(url):
+def _is_playlist_url(url):
     """Checks whether or not the URL is for a youtube playlist
     A url that is about both a youtube playlist and video will return False.
 
@@ -39,9 +39,21 @@ def validate_url(url):
         ValidationError: If the validation has failed
     """
     # We don't allow downloading from other sites except for youtube
-    if not is_url_from_youtube(url):
+    if not _is_url_from_youtube(url):
         raise ValidationError('Invalid URL')
 
     # We don't allow downloading playlists
-    if is_playlist_url(url):
+    if _is_playlist_url(url):
         raise ValidationError('Playlist downloading in not supported')
+
+def validate_filetype(filetype):
+    """Validates that the filetype is appropriate.
+
+    Args:
+        filetype(str): The filetype to validate.
+
+    Raises:
+        ValidationError: If the validation has failed.
+    """
+    if filetype != constants.AUDIO_FILETYPE_NAME and filetype != constants.VIDEO_FILETYPE_NAME:
+        raise ValidationError("Invalid filetype.")
