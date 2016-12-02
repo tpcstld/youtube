@@ -1,6 +1,5 @@
 import os
 
-
 def list_files():
     """List all downloaded files. Used primarily for debugging purposes.
 
