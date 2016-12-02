@@ -75,8 +75,12 @@ def download():
         JSON containing the progress of the download.
     """
     data = request.form
-    download = download_request.DownloadRequest(
-            data.get('url'), data.get('filetype'))
+
+    try:
+        download = download_request.DownloadRequest(
+                data.get('url'), data.get('filetype'))
+    except YoutubeError as e:
+        return jsonify(status='ERROR', message=e.message), 400
 
     if data.get('enable_trim') == "on":
         try:
@@ -87,14 +91,6 @@ def download():
     cached_data = status_holder.get_entry(download)
     # Download not yet started
     if cached_data is None:
-        # Do a preemptive validation screen, so we don't waste time processing
-        # videos that are going to error out anyways.
-        # TODO: Move this to the DownloadRequest class.
-        try:
-            validator.validate_url(download.get_url())
-        except YoutubeError as e:
-            return jsonify(status='ERROR', message=e.message), 400
-
         # Download the video in another thread.
         # We use another thread so that we can return some result immediately,
         # in order to satisfy Heroku's "must return something" policy.

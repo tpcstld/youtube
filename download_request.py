@@ -4,7 +4,7 @@ import re
 import time
 
 from youtube import constants
-from youtube.exceptions import ValidationError
+from youtube import validator
 
 class DownloadRequest(object):
     TIME_REGEX = re.compile(r"^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$")
@@ -21,8 +21,9 @@ class DownloadRequest(object):
         if not '//' in url:
             url = '//' + url
 
-        # TODO: We should validate that it is a correct url.
+        validator.validate_url(download.get_url());
         self.url = url
+
         # TODO: We should validate that it is either 'audio' or 'video'.
         self.filetype = filetype
         self.force_mp4_filetype = False
