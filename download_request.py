@@ -21,20 +21,34 @@ class DownloadRequest(object):
         if not '//' in url:
             url = '//' + url
 
+        # TODO: We should validate that it is a correct url.
         self.url = url
+        # TODO: We should validate that it is either 'audio' or 'video'.
         self.filetype = filetype
         self.force_mp4_filetype = False
 
-        # TODO: Move to it's own object.
+        # TODO: Abstract trimming information to its own object.
         self.enable_trim = False
-
         self.trim_start_secs = None
         self.trim_duration = None
 
     def get_url(self):
+        """Get the Youtube URL to download.
+
+        The URL is guaranteed to be a correct URL, with no extra processing
+        required for YoutubeDL to handle it.
+
+        Returns:
+            The Youtube URL to download as a string.
+        """
         return self.url
 
     def get_filetype(self):
+        """Get the requested filetype of the download.
+
+        Returns:
+            Either 'audio' or 'video'
+        """
         return self.filetype
 
     def is_audio_only(self):
