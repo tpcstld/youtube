@@ -7,7 +7,6 @@ from flask import render_template
 from flask import jsonify
 from flask import send_from_directory
 from flask import request
-from werkzeug.contrib.cache import FileSystemCache
 
 app = Flask(__name__)
 
