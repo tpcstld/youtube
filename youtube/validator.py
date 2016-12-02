@@ -3,6 +3,8 @@ import urlparse
 import constants
 from exceptions import ValidationError
 
+# TODO: Add tests.
+
 def _is_url_from_youtube(url):
     """Checks whether or not an URL is from youtube
 
