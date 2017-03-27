@@ -67,7 +67,7 @@ def convert(source, target, download):
 
     if download.should_time_trim():
         start_time, duration = download.get_time_trimming_data()
-        command = 'ffmpeg -y -ss {start_time} -i {source} -t {duration} -f wav - | lame -V 0 - {target}'.format(
+        command = 'ffmpeg -y -i {source} -ss {start_time} -t {duration} -f wav - | lame -V 0 - {target}'.format(
             start_time=start_time,
             duration=duration,
             source=source,
