@@ -45,6 +45,11 @@ def _get_cache_key(download):
         second_part = "False"
     return download.get_url() + "::::" + download.get_filetype() + second_part
 
+def clear():
+    """Clear the cache.
+    """
+    cache.clear()
+
 # TODO: Remove this function.
 def get_cache_key(download):
     """Temporary function for compatibility.

@@ -166,6 +166,14 @@ def list_files_route():
 
     return '\n'.join(files)
 
+@app.route('/api/clear')
+def clear_files_and_cache():
+    """Clears all files and status cache. Used for debugging.
+    """
+    list_files.clear_files()
+    status_holder.clear()
+
+    return 'Cleared.'
 
 if __name__ == '__main__':
     app.run(debug=True)
