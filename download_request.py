@@ -2,6 +2,7 @@
 """
 import re
 import time
+import datetime
 
 from youtube import constants
 from youtube import validator
@@ -65,13 +66,13 @@ class DownloadRequest(object):
         """Enables time trimming.
 
         Args:
-            start: A string in the format "HH:MM:SS".
-            end: A string in the format "HH:MM:SS".
+            start: A string in the format "HH:MM:SS.MMM".
+            end: A string in the format "HH:MM:SS.MMM".
         """
         def to_seconds(timestr):
             seconds= 0
             for part in timestr.split(':'):
-                seconds= seconds*60 + int(part)
+                seconds= seconds*60 + float(part)
             return seconds
 
         self.enable_trim = True
@@ -92,6 +93,8 @@ class DownloadRequest(object):
         Returns:
             A tuple (start time, duration).
         """
+        time_format = '%H:%M:%S.%f'
         return (
-            time.strftime('%H:%M:%S', time.gmtime(self.trim_start)),
-            time.strftime('%H:%M:%S', time.gmtime(self.trim_duration)))
+            datetime.datetime.utcfromtimestamp(self.trim_start).strftime(time_format),
+            datetime.datetime.utcfromtimestamp(self.trim_duration).strftime(time_format),
+        )
