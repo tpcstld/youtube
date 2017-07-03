@@ -51,14 +51,12 @@ def initate_download(download):
     # Log the download
     print 'Downloading', download.get_url(), 'in', download.get_filetype(), 'format'
 
-    final_filepath = file_path
-
     try:
         file_path, title = downloader.download(download)
     except:
         raise DownloadError('Error processing file or url')
 
-    file_ext = os.path.splitext(file_path)[1]
+    final_filepath = file_path
 
     # Convert the video if the selected file type is 'audio'
     if download.is_audio_only():
@@ -71,6 +69,7 @@ def initate_download(download):
             raise DownloadError('Error converting video to audio')
 
     filename = os.path.basename(final_filepath)
+    file_ext = os.path.splitext(filename)[1]
 
     output = {
         'filename': filename.encode('ascii', 'xmlcharrefreplace'),
