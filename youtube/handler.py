@@ -20,8 +20,7 @@ def _get_audio_filename(download, file_path):
         file_path: The file_path to the video file.
 
     Returns:
-        A tuple containing the new file path to the audio file, and the
-        extension (hardcoded to be mp3).
+        A string containing the new file path to the audio file.
     """
     # Remove the file extension from the original file.
     original_file_path = os.path.splitext(file_path)[0]
@@ -32,7 +31,7 @@ def _get_audio_filename(download, file_path):
         trim_suffix = begin + duration
 
     new_file_path = original_file_path + trim_suffix + AUDIO_FILE_EXTENSION
-    return new_file_path, AUDIO_FILE_EXTENSION
+    return new_file_path
 
 # TODO: Return a namedtuple instead.
 def initate_download(download):
@@ -52,6 +51,8 @@ def initate_download(download):
     # Log the download
     print 'Downloading', download.get_url(), 'in', download.get_filetype(), 'format'
 
+    final_filepath = file_path
+
     try:
         file_path, title = downloader.download(download)
     except:
@@ -61,15 +62,15 @@ def initate_download(download):
 
     # Convert the video if the selected file type is 'audio'
     if download.is_audio_only():
-        new_file_path, file_ext = _get_audio_filename(download, file_path)
+        final_filepath = _get_audio_filename(download, file_path)
 
         try:
-            convertor.convert(file_path, new_file_path, download)
+            convertor.convert(file_path, final_filepath, download)
         except Exception as e:
             print 'Conversion Error:', e.message
             raise DownloadError('Error converting video to audio')
 
-    filename = os.path.splitext(os.path.basename(file_path))[0] + file_ext
+    filename = os.path.basename(final_filepath)
 
     output = {
         'filename': filename.encode('ascii', 'xmlcharrefreplace'),
