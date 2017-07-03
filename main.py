@@ -52,7 +52,8 @@ def _download_video(download):
         status_holder.set_finished(download, output)
     except YoutubeError as e:
         status_holder.set_error(download, e.message, 400)
-    except Exception:
+    except Exception as e:
+        print "Exception in download:", e
         status_holder.set_error(download, 'Internal Error', 500)
 
 # APIs
