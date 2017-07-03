@@ -79,12 +79,14 @@ def download():
         download = download_request.DownloadRequest(
                 data.get('url'), data.get('filetype'))
     except YoutubeError as e:
+        print e
         return jsonify(status='ERROR', message=e.message), 400
 
     if data.get('enable_trim') == "on":
         try:
             download.set_time_trimming(data.get("start_time"), data.get("end_time"))
         except YoutubeError as e:
+            print e
             return jsonify(status='ERROR', message=e.message), 400
 
     cached_data = status_holder.get_entry(download)
