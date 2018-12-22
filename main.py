@@ -145,8 +145,7 @@ def get_file():
     if not cached_data:
         return 'File not found. Please try again.', 400
     filename = cached_data['data']['filename']
-    # We need to be able to handle unicode characters
-    name = cached_data['data']['title'].encode('utf-8')
+    name = cached_data['data']['title']
 
     path = os.path.join(os.getcwd(), 'temp')
 
