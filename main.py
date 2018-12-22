@@ -1,12 +1,15 @@
 import os
 import json
 import threading
+import unicodedata
 import urllib
+
 from flask import Flask
 from flask import render_template
 from flask import jsonify
 from flask import send_from_directory
 from flask import request
+from werkzeug.urls import url_quote
 
 app = Flask(__name__)
 
@@ -150,9 +153,21 @@ def get_file():
     # Logging
     print "Retrieving file:", path, filename, "of name:", name
 
-    return send_from_directory(path, filename, as_attachment=True,
-                               attachment_filename=name)
+    rv = send_from_directory(path, filename)
 
+    # Need to support UTF-8
+    try:
+        filename = filename.encode('latin-1')
+    except UnicodeEncodeError:
+        filenames = {
+            'filename': unicodedata.normalize('NFKD', filename).encode('latin-1', 'ignore'),
+            'filename*': "UTF-8''{}".format(url_quote(filename)),
+        }
+    else:
+        filenames = {'filename': filename}
+
+    rv.headers.set('Content-Disposition', 'attachment', **filenames)
+    return rv
 
 @app.route('/api/all_files')
 def list_files_route():
