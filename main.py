@@ -157,16 +157,16 @@ def get_file():
 
     # Need to support UTF-8
     try:
-        filename = filename.encode('latin-1')
+        name = name.encode('latin-1')
     except UnicodeEncodeError:
-        filenames = {
-            'filename': unicodedata.normalize('NFKD', filename).encode('latin-1', 'ignore'),
-            'filename*': "UTF-8''{}".format(url_quote(filename)),
+        names = {
+            'filename': unicodedata.normalize('NFKD', name).encode('latin-1', 'ignore'),
+            'filename*': "UTF-8''{}".format(url_quote(name)),
         }
     else:
-        filenames = {'filename': filename}
+        names = {'filename': names}
 
-    rv.headers.set('Content-Disposition', 'attachment', **filenames)
+    rv.headers.set('Content-Disposition', 'attachment', **names)
     return rv
 
 @app.route('/api/all_files')
