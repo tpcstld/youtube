@@ -150,7 +150,7 @@ def get_file():
     path = os.path.join(os.getcwd(), 'temp')
 
     # Logging
-    print "Retrieving file:", path, filename, "of name:", name
+    print "Retrieving file:", path, filename, "of name:", name.encode('utf-8')
 
     rv = send_from_directory(path, filename)
 
