@@ -163,7 +163,7 @@ def get_file():
             'filename*': "UTF-8''{}".format(url_quote(name)),
         }
     else:
-        names = {'filename': names}
+        names = {'filename': name}
 
     rv.headers.set('Content-Disposition', 'attachment', **names)
     return rv
