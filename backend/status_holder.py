@@ -8,7 +8,7 @@ processing asynchronously, while holding the current state and progress.
 # TODO: Tests
 import os
 
-from werkzeug.contrib.cache import FileSystemCache
+from cachelib import FileSystemCache
 
 # For a single dyno, there can be more than one serving instances.We leverage
 # the shared emphemial filesystem as the cache.
