@@ -1,4 +1,4 @@
-from urllib.parse import urlparse
+import urllib.parse
 
 from . import constants
 from .exceptions import ValidationError
@@ -14,7 +14,7 @@ def _is_url_from_youtube(url):
     Returns:
         True if the URL is a youtube url, otherwise False.
     """
-    location = urlparse.urlparse(url).netloc
+    location = urllib.parse.urlparse(url).netloc
     # Two possible youtu.be is the shortlink version of youtube
     return 'youtube.' in location or 'youtu.be' in location
 
@@ -28,7 +28,7 @@ def _is_playlist_url(url):
     Returns:
         True if the URL is for only a youtube playlist, otherwise False.
     """
-    query = urlparse.parse_qs(urlparse.urlparse(url).query)
+    query = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
     return 'list' in query and 'v' not in query
 
 def validate_url(url):

@@ -40,4 +40,4 @@ def download(download):
     file_name = file_name.encode('ascii', 'ignore')
 
     title = info.get('title', os.path.basename(file_name))
-    return file_name, title
+    return file_name.decode('utf-8'), title

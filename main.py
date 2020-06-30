@@ -2,7 +2,7 @@ import os
 import json
 import threading
 import unicodedata
-import urllib
+import urllib.parse
 
 from flask import Flask
 from flask import render_template
@@ -46,8 +46,8 @@ def _download_video(download):
     # If there's a non-bug error, report it
     try:
         output = handler.initate_download(download)
-        if not os.path.isfile(os.path.join(os.getcwd(), 'temp',
-                                           output['filename'])):
+        if not os.path.isfile(os.path.join(str(os.getcwd()), 'temp',
+                                           str(output['filename']))):
             print("Downloaded file missing. Retrying and forcing mp4 filetype.")
             download.set_force_mp4_filetype(True)
             output = handler.initate_download(download)
@@ -56,6 +56,7 @@ def _download_video(download):
     except YoutubeError as e:
         status_holder.set_error(download, e.message, 400)
     except Exception as e:
+        raise e
         print("Exception in download:", e)
         status_holder.set_error(download, 'Internal Error', 500)
 
@@ -114,7 +115,7 @@ def download():
         return jsonify(status='STARTED')
     elif cached_data['status'] == status_holder.FINISHED_STATUS:
         # We need to URL encode the key so it can be passed as a query parameter
-        encoded_key = urllib.quote(status_holder.get_cache_key(download))
+        encoded_key = urllib.parse.quote(status_holder.get_cache_key(download))
         return jsonify(status='FINISHED', key=encoded_key,
                        **cached_data['data'])
     elif cached_data['status'] == status_holder.ERROR_STATUS:

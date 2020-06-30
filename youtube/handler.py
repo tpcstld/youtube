@@ -30,7 +30,7 @@ def _get_audio_filename(download, file_path):
         begin, duration = download.get_time_trimming_data()
         trim_suffix = begin + duration
 
-    new_file_path = original_file_path + trim_suffix + AUDIO_FILE_EXTENSION
+    new_file_path = str(original_file_path) + trim_suffix + AUDIO_FILE_EXTENSION
     return new_file_path
 
 # TODO: Return a namedtuple instead.
@@ -63,7 +63,7 @@ def initate_download(download):
         final_filepath = _get_audio_filename(download, file_path)
 
         try:
-            convertor.convert(file_path, final_filepath, download)
+            convertor.convert(str(file_path), str(final_filepath), download)
         except Exception as e:
             print('Conversion Error:', e.message)
             raise DownloadError('Error converting video to audio')
@@ -72,7 +72,7 @@ def initate_download(download):
     file_ext = os.path.splitext(filename)[1]
 
     output = {
-        'filename': filename.encode('ascii', 'xmlcharrefreplace'),
+        'filename': filename.encode('ascii', 'xmlcharrefreplace').decode('utf-8'),
         'title': title + file_ext
     }
     return output
