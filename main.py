@@ -48,7 +48,7 @@ def _download_video(download):
         output = handler.initate_download(download)
         if not os.path.isfile(os.path.join(os.getcwd(), 'temp',
                                            output['filename'])):
-            print "Downloaded file missing. Retrying and forcing mp4 filetype."
+            print("Downloaded file missing. Retrying and forcing mp4 filetype.")
             download.set_force_mp4_filetype(True)
             output = handler.initate_download(download)
 
@@ -56,7 +56,7 @@ def _download_video(download):
     except YoutubeError as e:
         status_holder.set_error(download, e.message, 400)
     except Exception as e:
-        print "Exception in download:", e
+        print("Exception in download:", e)
         status_holder.set_error(download, 'Internal Error', 500)
 
 # APIs
@@ -83,14 +83,14 @@ def download():
         download = download_request.DownloadRequest(
                 data.get('url'), data.get('filetype'))
     except YoutubeError as e:
-        print e
+        print(e)
         return jsonify(status='ERROR', message=e.message), 400
 
     if data.get('enable_trim') == "on":
         try:
             download.set_time_trimming(data.get("start_time"), data.get("end_time"))
         except YoutubeError as e:
-            print e
+            print(e)
             return jsonify(status='ERROR', message=e.message), 400
 
     cached_data = status_holder.get_entry(download)
@@ -137,7 +137,7 @@ def get_file():
         The specified file over HTTP.
     """
     cache_key = request.args.get('key', None)
-    print "Getting information for cache key:", cache_key
+    print("Getting information for cache key:", cache_key)
     if not cache_key:
         return '', 400
 
@@ -150,7 +150,7 @@ def get_file():
     path = os.path.join(os.getcwd(), 'temp')
 
     # Logging
-    print "Retrieving file:", path, filename, "of name:", name.encode('utf-8')
+    print("Retrieving file:", path, filename, "of name:", name.encode('utf-8'))
 
     rv = send_from_directory(path, filename)
 

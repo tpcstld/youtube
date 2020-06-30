@@ -27,15 +27,15 @@ def _find_matching_file(filename):
     path = os.path.join(os.getcwd(), 'temp')
     files = [f for f in os.listdir(path)
              if os.path.isfile(os.path.join(path, f))]
-    print "Found all files:", " ".join(files)
+    print("Found all files:", " ".join(files))
     files = [f for f in files if f.startswith(os.path.basename(name))]
 
     if len(files) > 0:
         new_filename = os.path.join(path, files[0])
-        print "Converting", new_filename, "instead of", filename
+        print("Converting", new_filename, "instead of", filename)
         return new_filename
     else:
-        print "Cannot find matching filename for", filename
+        print("Cannot find matching filename for", filename)
         return ""
 
 def convert(source, target, download):
@@ -49,17 +49,17 @@ def convert(source, target, download):
     Returns:
         The process that is converting the file.
     """
-    print 'Converting file:', source, 'to', target
+    print('Converting file:', source, 'to', target)
 
     # Find any matching file
     source = _find_matching_file(source)
 
     if not os.path.isfile(source):
-        print 'Not converting because source file is missing'
+        print('Not converting because source file is missing')
         return
 
     if os.path.isfile(target):
-        print 'Not converting because target file exists'
+        print('Not converting because target file exists')
         return
 
     if download.should_time_trim():
@@ -76,7 +76,7 @@ def convert(source, target, download):
             target=target,
         )
 
-    print 'Running command:', command
+    print('Running command:', command)
     process = subprocess.Popen(
         command,
         stdout=subprocess.PIPE,

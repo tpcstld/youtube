@@ -9,7 +9,7 @@ def list_files():
         A list of file names.
     """
     # Logging
-    print 'Listing all downloaded files'
+    print('Listing all downloaded files')
 
     path = os.path.join(os.getcwd(), 'temp')
     return [f for f in os.listdir(path)
@@ -18,7 +18,7 @@ def list_files():
 def clear_files():
     """Deletes all downloaded files.
     """
-    print 'Deleting all downloaded files'
+    print('Deleting all downloaded files')
 
     path = os.path.join(os.getcwd(), 'temp')
     for f in os.listdir(path):
@@ -27,4 +27,4 @@ def clear_files():
             if os.path.isfile(file_path):
                 os.remove(file_path)
         except Exception as e:
-            print e
+            print(e)

@@ -1,10 +1,10 @@
 import os
 
-import constants
-import convertor
-import downloader
-import validator
-from exceptions import DownloadError
+from . import constants
+from . import convertor
+from . import downloader
+from . import validator
+from .exceptions import DownloadError
 
 AUDIO_FILE_EXTENSION = '.mp3'
 
@@ -49,7 +49,7 @@ def initate_download(download):
         DownloadError: if something went wrong during the download
     """
     # Log the download
-    print 'Downloading', download.get_url(), 'in', download.get_filetype(), 'format'
+    print('Downloading', download.get_url(), 'in', download.get_filetype(), 'format')
 
     try:
         file_path, title = downloader.download(download)
@@ -65,7 +65,7 @@ def initate_download(download):
         try:
             convertor.convert(file_path, final_filepath, download)
         except Exception as e:
-            print 'Conversion Error:', e.message
+            print('Conversion Error:', e.message)
             raise DownloadError('Error converting video to audio')
 
     filename = os.path.basename(final_filepath)

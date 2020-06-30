@@ -1,7 +1,7 @@
-import urlparse
+from urllib.parse import urlparse
 
-import constants
-from exceptions import ValidationError
+from . import constants
+from .exceptions import ValidationError
 
 # TODO: Add tests.
 
